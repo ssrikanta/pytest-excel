@@ -9,7 +9,7 @@ to create excel report for test results.
 Requirements
 ------------
 
-You will need the following prerequisites in order to use pytest-sugar:
+You will need the following prerequisites in order to use pytest-excel:
 
 - Python 2.7, 3.4 or 3.5
 - pytest 2.9.0 or newer
