@@ -29,7 +29,6 @@ setup(name='pytest-excel',
       packages=['pytest_excel'],
       entry_points={'pytest11': ['excel = pytest_excel']},
       install_requires=['pytest>=2.3', 'openpyxl'],
-      license='BSD',
       keywords='py.test pytest excel report',
       classifiers=[
           'Development Status :: 1 - Alpha',
