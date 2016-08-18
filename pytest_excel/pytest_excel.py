@@ -23,7 +23,7 @@ def pytest_addoption(parser):
 def pytest_configure(config):
     excelpath = config.option.excelpath
     # prevent opening excel log on slave nodes (xdist)
-    if excelpath and not hasattr(config, 'slaveinput'):
+    if excelpath:
         config._excel = ExcelReporter(excelpath)
         config.pluginmanager.register(config._excel)
 
@@ -64,28 +64,29 @@ class ExcelReporter(object):
         print self.results
         self.results.append(result)
 
+    @classmethod
+    def create_sheet(cls, column_heading):
 
-    def create_sheet(self, column_heading):
-
-        self.wsheet = self.wbook.create_sheet(index=0)
+        cls.wsheet = cls.wbook.create_sheet(index=0)
 
         for heading in column_heading:
             index_value = column_heading.index(heading) + 1
             heading = heading.replace("_", " ").upper()
-            self.wsheet.cell(row=self.rc, column=index_value).value = heading
-        self.rc = self.rc + 1
+            cls.wsheet.cell(row=cls.rc, column=index_value).value = heading
+        cls.rc = cls.rc + 1
 
 
-    def update_worksheet(self):
+    @classmethod
+    def update_worksheet(cls):
 
-        for data in self.results:
+        for data in cls.results:
             for key, value in data.iteritems():
-                self.wsheet.cell(row=self.rc, column=data.keys().index(key) + 1).value = value
-            self.rc = self.rc + 1
+                cls.wsheet.cell(row=cls.rc, column=data.keys().index(key) + 1).value = value
+            cls.rc = cls.rc + 1
 
-
-    def save_excel(self):
-        self.wbook.save(filename=self.excelpath)
+    @classmethod
+    def save_excel(cls):
+        cls.wbook.save(filename=cls.excelpath)
 
 
     def build_result(self, item, call, status, message):
