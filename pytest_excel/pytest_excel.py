@@ -5,11 +5,7 @@ from openpyxl import Workbook
 import pytest
 
 
-__version__ = '0.1.1'
-
-
 _py_ext_re = re.compile(r"\.py$")
-
 
 
 def pytest_addoption(parser):
@@ -24,7 +20,6 @@ def pytest_addoption(parser):
 
 def pytest_configure(config):
     excelpath = config.option.excelpath
-    # prevent opening excel log on slave nodes (xdist)
     if excelpath:
         config._excel = ExcelReporter(excelpath)
         config.pluginmanager.register(config._excel)
@@ -51,19 +46,17 @@ def mangle_test_address(address):
     return names
 
 
-
 class ExcelReporter(object):
 
-    def __init__(self, excelpath):
 
-        self.excelpath = excelpath
+    def __init__(self, excelpath):
         self.results = []
         self.wbook = Workbook()
         self.rc = 1
+        self.excelpath = excelpath
 
 
     def append(self, result):
-
         self.results.append(result)
 
 
@@ -78,79 +71,83 @@ class ExcelReporter(object):
         self.rc = self.rc + 1
 
 
-    def update_worksheet(self, data):
+    def update_worksheet(self):
+        for data in self.results:
+            for key, value in data.iteritems():
+                self.wsheet.cell(row=self.rc, column=data.keys().index(key) + 1).value = value
+            self.rc = self.rc + 1
 
-        for key, value in data.iteritems():
-            self.wsheet.cell(row=self.rc, column=data.keys().index(key) + 1).value = value
-        self.rc = self.rc + 1
+
 
 
     def save_excel(self):
-        self.wbook.save(filename=self.excelpath)
+        self.wbook.save(filename='santosh.xls')
 
 
-    def build_result(self, item, call, status, message):
+    def build_result(self, report, status, message):
 
         result = OrderedDict()
-        names = mangle_test_address(item.nodeid)
+        names = mangle_test_address(report.nodeid)
 
         result['suite_name'] = names[-2]
         result['test_name'] = names[-1]
-        if item.obj.__doc__ is None:
-          result['description'] = item.obj.__doc__
+        if report.test_doc is None:
+          result['description'] = report.test_doc
         else:
-          result['description'] = item.obj.__doc__.strip()
+          result['description'] = report.test_doc.strip()
 
         result['result'] = status
-        result['duration'] = call.stop - call.start
+        result['duration'] = getattr(report, 'duration', 0.0)
         result['message'] = message
-        result['file_name'] = item.location[0]
+        result['file_name'] = report.location[0]
         self.append(result)
 
 
-    def append_pass(self, item, call):
-        if 'xfail' in item.keywords:
-            status = "XPASSED"
-            message = "xfail-marked test passes unexpectedly"
-        else:
-            status = "PASSED"
-            message = None
-
-        self.build_result(item, call, status, message)
+    def append_pass(self, report):
+        status = "PASSED"
+        message = None
+        self.build_result(report, status, message)
 
 
-    def append_failure(self, item, call):
+    def append_failure(self, report):
 
-        if 'xfail' in item.keywords:
+        if hasattr(report, "wasxfail"):
             status = "XFAILED"
             message = "expected test failure "
 
         else:
+            if hasattr(report.longrepr, "reprcrash"):
+                message = report.longrepr.reprcrash.message
+            elif isinstance(report.longrepr, (unicode, str)):
+                message = report.longrepr
+            else:
+                message = str(report.longrepr)
+
             status = "FAILED"
-            message = str(call.excinfo)
 
-        self.build_result(item, call, status, message)
+        self.build_result(report, status, message)
 
 
-    def append_error(self, item, call):
+    def append_error(self, report):
 
-        message = call.excinfo.getrepr(style='native')
+        message = report.longrepr
         status = "ERROR"
-        self.build_result(item, call, status, message)
+        self.build_result(report, status, message)
 
 
-    def append_skipped(self, item, call):
+    def append_skipped(self, report):
 
-        if 'xfail' in item.keywords:
+        if hasattr(report, "wasxfail"):
             status = "XFAILED"
             message = "expected test failure "
 
         else:
             status = "SKIPPED"
-            r = call.excinfo._getreprcrash()
-            message = str(r.message)
+            _, _, message = report.longrepr
+            if message.startswith("Skipped: "):
+                message = message[9:]
 
-        self.build_result(item, call, status, message)
+        self.build_result(report, status, message)
 
 
     def build_tests(self, item):
@@ -182,41 +179,40 @@ class ExcelReporter(object):
                 self.append_tests(item)
 
 
+    @pytest.mark.hookwrapper
     def pytest_runtest_makereport(self, item, call):
-        when = call.when
-        excinfo = call.excinfo
 
-        if when == 'call':
-            if not call.excinfo:
-                self.append_pass(item, call)
+        outcome = yield
+        report = outcome.get_result()
+        report.test_doc = item.obj.__doc__
+
+
+    def pytest_runtest_logreport(self, report):
+
+        if report.passed:
+            if report.when == "call":  # ignore setup/teardown
+                self.append_pass(report)
+
+        elif report.failed:
+            if report.when == "call":
+                self.append_failure(report)
+
             else:
-              self.append_failure(item, call)
+                self.append_error(report)
 
-        elif when == 'setup':
-
-            if excinfo is not None:
-                if excinfo.errisinstance(pytest.skip.Exception):
-                    self.append_skipped(item, call)
-                else:
-                    self.append_error(item, call)
-
-        else:
-            if excinfo is not None:
-                self.append_error(item, call)
+        elif report.skipped:
+            self.append_skipped(report)
 
 
-    def pytest_sessionfinish(self):
-        if self.results:
-            fieldnames = self.results[0].keys()
-            self.create_sheet(fieldnames)
-            for res in self.results:
-                self.update_worksheet(res)
-
-            self.save_excel()
+    def pytest_sessionfinish(self, session):
+        if not hasattr(session.config, 'slaveinput'):
+            if self.results:
+                fieldnames = self.results[0].keys()
+                self.create_sheet(fieldnames)
+                self.update_worksheet()
+                self.save_excel()
 
 
     def pytest_terminal_summary(self, terminalreporter):
         terminalreporter.write_sep("-", "excel report: %s" % (self.excelpath))
-
-
 
