@@ -6,7 +6,7 @@ Release Notes
 
 * Initial release
 
-**1.1.1 (2016-08-18)**
+**1.0.0 (2016-08-18)**
 
 * Added support for Xdist plugin feature.
 
