@@ -15,3 +15,7 @@ Release Notes
 
 * Added fix for excel file path
 
+
+**1.1.0 (2016-08-18)**
+
+* Added support to capture xfail and xpass reasons
