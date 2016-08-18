@@ -10,3 +10,8 @@ Release Notes
 
 * Added support for Xdist plugin feature.
 
+
+**1.0.1 (2016-08-18)**
+
+* Added fix for excel file path
+
