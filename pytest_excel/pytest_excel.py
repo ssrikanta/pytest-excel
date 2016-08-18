@@ -81,7 +81,7 @@ class ExcelReporter(object):
 
 
     def save_excel(self):
-        self.wbook.save(filename='santosh.xls')
+        self.wbook.save(filename=self.excelpath)
 
 
     def build_result(self, report, status, message):
