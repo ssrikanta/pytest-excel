@@ -78,8 +78,6 @@ class ExcelReporter(object):
             self.rc = self.rc + 1
 
 
-
-
     def save_excel(self):
         self.wbook.save(filename=self.excelpath)
 
@@ -112,8 +110,8 @@ class ExcelReporter(object):
     def append_failure(self, report):
 
         if hasattr(report, "wasxfail"):
-            status = "XFAILED"
-            message = "expected test failure "
+            status = "XPASSED"
+            message = "xfail-marked test passes Reason: %s " % report.wasxfail
 
         else:
             if hasattr(report.longrepr, "reprcrash"):
@@ -139,7 +137,7 @@ class ExcelReporter(object):
 
         if hasattr(report, "wasxfail"):
             status = "XFAILED"
-            message = "expected test failure "
+            message = "expected test failure Reason: %s " % report.wasxfail
 
         else:
             status = "SKIPPED"
