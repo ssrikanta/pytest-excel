@@ -3,6 +3,7 @@ import re
 from collections import OrderedDict
 from openpyxl import Workbook
 import pytest
+from _pytest.mark import MarkInfo
 
 
 _py_ext_re = re.compile(r"\.py$")
@@ -98,6 +99,7 @@ class ExcelReporter(object):
         result['duration'] = getattr(report, 'duration', 0.0)
         result['message'] = message
         result['file_name'] = report.location[0]
+        result['markers'] = report.test_marker
         self.append(result)
 
 
@@ -181,8 +183,14 @@ class ExcelReporter(object):
     def pytest_runtest_makereport(self, item, call):
 
         outcome = yield
+
         report = outcome.get_result()
         report.test_doc = item.obj.__doc__
+        test_marker = []
+        for k, v in item.keywords.iteritems():
+            if isinstance(v, MarkInfo):
+                test_marker.append(k)
+        report.test_marker = ', '.join(test_marker)
 
 
     def pytest_runtest_logreport(self, report):
