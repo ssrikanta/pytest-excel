@@ -19,3 +19,7 @@ Release Notes
 **1.1.0 (2016-08-18)**
 
 * Added support to capture xfail and xpass reasons
+
+**1.2.0 (2016-09-14)**
+
+* Added support to include markers in the excel report
