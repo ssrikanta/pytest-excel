@@ -23,3 +23,8 @@ Release Notes
 **1.2.0 (2016-09-14)**
 
 * Added support to include markers in the excel report
+
+**1.2.1 (2017-01-3)**
+
+* Fix for the issue obserevd on python3.6
+* Fix for unicode related issues in python3.6

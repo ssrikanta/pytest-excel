@@ -75,7 +75,7 @@ class ExcelReporter(object):
     def update_worksheet(self):
         for data in self.results:
             for key, value in data.iteritems():
-                self.wsheet.cell(row=self.rc, column=data.keys().index(key) + 1).value = value
+                self.wsheet.cell(row=self.rc, column=list(data).index(key) + 1).value = value
             self.rc = self.rc + 1
 
 
@@ -213,7 +213,7 @@ class ExcelReporter(object):
     def pytest_sessionfinish(self, session):
         if not hasattr(session.config, 'slaveinput'):
             if self.results:
-                fieldnames = self.results[0].keys()
+                fieldnames = list(self.results[0])
                 self.create_sheet(fieldnames)
                 self.update_worksheet()
                 self.save_excel()
