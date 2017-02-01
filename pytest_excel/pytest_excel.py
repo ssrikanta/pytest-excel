@@ -74,7 +74,7 @@ class ExcelReporter(object):
 
     def update_worksheet(self):
         for data in self.results:
-            for key, value in data.iteritems():
+            for key, value in data.items():
                 self.wsheet.cell(row=self.rc, column=list(data).index(key) + 1).value = value
             self.rc = self.rc + 1
 
@@ -187,7 +187,7 @@ class ExcelReporter(object):
         report = outcome.get_result()
         report.test_doc = item.obj.__doc__
         test_marker = []
-        for k, v in item.keywords.iteritems():
+        for k, v in item.keywords.items():
             if isinstance(v, MarkInfo):
                 test_marker.append(k)
         report.test_marker = ', '.join(test_marker)
