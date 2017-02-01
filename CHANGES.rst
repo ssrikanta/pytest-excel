@@ -24,7 +24,12 @@ Release Notes
 
 * Added support to include markers in the excel report
 
-**1.2.1 (2017-01-3)**
+**1.2.1 (2017-01-31)**
 
 * Fix for the issue obserevd on python3.6
 * Fix for unicode related issues in python3.6
+
+
+**1.2.2 (2017-02-01)**
+
+* Fixes issue with report update method in python3.6
