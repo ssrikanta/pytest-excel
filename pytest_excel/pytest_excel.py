@@ -3,7 +3,7 @@ import re
 from collections import OrderedDict
 from openpyxl import Workbook
 import pytest
-from _pytest.mark import MarkInfo
+from _pytest.mark.structures import Mark
 
 
 _py_ext_re = re.compile(r"\.py$")
@@ -188,8 +188,10 @@ class ExcelReporter(object):
         report.test_doc = item.obj.__doc__
         test_marker = []
         for k, v in item.keywords.items():
-            if isinstance(v, MarkInfo):
-                test_marker.append(k)
+            if isinstance(v,list):
+                for x in v:
+                    if isinstance(x,Mark):
+                        test_marker.append(x.name)
         report.test_marker = ', '.join(test_marker)
 
 

@@ -33,3 +33,8 @@ Release Notes
 **1.2.2 (2017-02-01)**
 
 * Fixes issue with report update method in python3.6
+
+
+**1.2.3 (2018-06-14)**
+
+* Fixes issue with marker information
