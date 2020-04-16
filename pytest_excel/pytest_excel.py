@@ -75,7 +75,10 @@ class ExcelReporter(object):
     def update_worksheet(self):
         for data in self.results:
             for key, value in data.items():
-                self.wsheet.cell(row=self.rc, column=list(data).index(key) + 1).value = value
+                try:
+                    self.wsheet.cell(row=self.rc, column=list(data).index(key) + 1).value = value
+                except ValueError:
+                    self.wsheet.cell(row=self.rc, column=list(data).index(key) + 1).value = str(vars(value))
             self.rc = self.rc + 1
 
 
