@@ -1,5 +1,6 @@
 
 import re
+from datetime import datetime
 from collections import OrderedDict
 from openpyxl import Workbook
 import pytest
@@ -100,6 +101,7 @@ class ExcelReporter(object):
 
         result['result'] = status
         result['duration'] = getattr(report, 'duration', 0.0)
+        result['timestamp'] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
         result['message'] = message
         result['file_name'] = report.location[0]
         result['markers'] = report.test_marker
