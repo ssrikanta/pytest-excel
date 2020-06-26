@@ -167,6 +167,22 @@ class ExcelReporter(object):
         else:
           result['description'] = item.obj.__doc__.strip()
         result['file_name'] = item.location[0]
+        test_marker = []
+        test_message = []
+        for k, v in item.keywords.items():
+            if isinstance(v, list):
+                for x in v:
+                    if isinstance(x, Mark):
+                        if x.name != 'usefixtures':
+                            test_marker.append(x.name)
+                        if x.kwargs:
+                            test_message.append(x.kwargs.get('reason'))
+
+        test_markers = ', '.join(test_marker)
+        result['markers'] = test_markers
+
+        test_messages = ', '.join(test_message)
+        result['message'] = test_messages
         self.append(result)
 
 

@@ -5,21 +5,9 @@ import io
 from setuptools import setup
 
 
-def get_version(filename):
-
-    here = os.path.dirname(os.path.abspath(__file__))
-    f = open(os.path.join(here, filename))
-    version_match = f.read()
-    f.close()
-
-    if version_match:
-        return version_match
-    raise RuntimeError("Unable to find version string.")
-
-
 
 setup(name='pytest-excel',
-      version=get_version('version.txt'),
+      version='1.4.1',
       description='pytest plugin for generating excel reports',
       long_description=io.open('README.rst', encoding='utf-8', errors='ignore').read(),
       author='santosh',
