@@ -243,5 +243,6 @@ class ExcelReporter(object):
 
 
     def pytest_terminal_summary(self, terminalreporter):
-        terminalreporter.write_sep("-", "excel report: %s" % (self.excelpath))
+        if self.results:
+            terminalreporter.write_sep("-", "excel report: %s" % (self.excelpath))
 
