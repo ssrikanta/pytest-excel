@@ -38,3 +38,15 @@ Release Notes
 **1.2.3 (2018-06-14)**
 
 * Fixes issue with marker information
+
+**1.4.0 (2020-06-14)**
+
+* Fixes issue with installation
+
+**1.4.1 (2020-06-14)**
+
+* Fixes issue with terminal reporting when no cases gets executed
+
+**1.4.2 (2020-10-06)**
+
+* Fixes license details
