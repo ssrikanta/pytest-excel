@@ -11,7 +11,7 @@ Requirements
 
 You will need the following prerequisites in order to use pytest-excel:
 
-- Python 2.7, 3.4 or 3.5
+- Python 3.6, 3.7 and above
 - pytest 2.9.0 or newer
 - opepyxl
 
@@ -34,3 +34,8 @@ If you would like more detailed output (one test per line), then you may use the
 If you would like to run tests without execution to collect test doc string::
 
     $ py.test --excelreport=report.xls --collect-only
+
+
+If you would like to get timestamp in the as filename::
+
+    $ py.test --excelreport=report%Y-%M-dT%H%.xls
