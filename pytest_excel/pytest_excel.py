@@ -55,7 +55,7 @@ class ExcelReporter(object):
         self.results = []
         self.wbook = Workbook()
         self.rc = 1
-        self.excelpath = excelpath
+        self.excelpath = datetime.now().strftime(excelpath) 
 
 
     def append(self, result):
