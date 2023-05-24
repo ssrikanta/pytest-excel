@@ -191,7 +191,7 @@ class ExcelReporter(object):
         self.build_tests(item)
 
 
-    @pytest.mark.trylast
+    @pytest.hookimpl(trylast=True) 
     def pytest_collection_modifyitems(self, session, config, items):
         """ called after collection has been performed, may filter or re-order
         the items in-place."""
@@ -200,7 +200,7 @@ class ExcelReporter(object):
                 self.append_tests(item)
 
 
-    @pytest.mark.hookwrapper
+    @pytest.hookimpl(hookwraper=True)
     def pytest_runtest_makereport(self, item, call):
 
         outcome = yield
