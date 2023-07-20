@@ -50,3 +50,7 @@ Release Notes
 **1.4.2 (2020-10-06)**
 
 * Fixes license details
+
+**1.5.2 (2023-17-20)**
+
+* Fixes typo error

@@ -7,7 +7,7 @@ from setuptools import setup
 
 
 setup(name='pytest-excel',
-      version='1.5.0',
+      version='1.5.2',
       description='pytest plugin for generating excel reports',
       long_description=io.open('README.rst', encoding='utf-8', errors='ignore').read(),
       author='santosh',
@@ -31,11 +31,11 @@ setup(name='pytest-excel',
           'Topic :: Software Development :: Quality Assurance',
           'Topic :: Software Development :: Libraries',
           'Topic :: Utilities',
-          'Programming Language :: Python :: 2.7',
-          'Programming Language :: Python :: 3.6',
           'Programming Language :: Python :: 3.7',
           'Programming Language :: Python :: 3.8',
           'Programming Language :: Python :: 3.9',
+          'Programming Language :: Python :: 3.10',
+          'Programming Language :: Python :: 3.11',
       ]
       )
 
