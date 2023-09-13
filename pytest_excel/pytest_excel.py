@@ -1,8 +1,8 @@
-
 import re
+import pandas as pd
+import os
 from datetime import datetime
 from collections import OrderedDict
-from openpyxl import Workbook
 import pytest
 from _pytest.mark.structures import Mark
 
@@ -53,39 +53,20 @@ class ExcelReporter(object):
 
     def __init__(self, excelpath):
         self.results = []
-        self.wbook = Workbook()
-        self.rc = 1
         self.excelpath = datetime.now().strftime(excelpath)
-
 
     def append(self, result):
         self.results.append(result)
 
 
     def create_sheet(self, column_heading):
-
-        self.wsheet = self.wbook.create_sheet(index=0)
-
-        for heading in column_heading:
-            index_value = column_heading.index(heading) + 1
-            heading = heading.replace("_", " ").upper()
-            self.wsheet.cell(row=self.rc, column=index_value).value = heading
-        self.rc = self.rc + 1
-
+        self.wbook = pd.DataFrame(columns = column_heading)
 
     def update_worksheet(self):
-        for data in self.results:
-            for key, value in data.items():
-                try:
-                    self.wsheet.cell(row=self.rc, column=list(data).index(key) + 1).value = value
-                except ValueError:
-                    self.wsheet.cell(row=self.rc, column=list(data).index(key) + 1).value = str(vars(value))
-            self.rc = self.rc + 1
-
+        self.wbook = pd.concat([self.wbook, pd.DataFrame(self.results)], ignore_index = False)
 
     def save_excel(self):
-        self.wbook.save(filename=self.excelpath)
-
+        self.wbook.to_excel(self.excelpath, index = False)
 
     def build_result(self, report, status, message):
 
@@ -99,12 +80,12 @@ class ExcelReporter(object):
         else:
           result['description'] = report.test_doc.strip()
 
-        result['result'] = status
-        result['duration'] = getattr(report, 'duration', 0.0)
+        result['result']    = status
+        result['duration']  = getattr(report, 'duration', 0.0)
         result['timestamp'] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
-        result['message'] = message
+        result['message']   = message
         result['file_name'] = report.location[0]
-        result['markers'] = report.test_marker
+        result['markers']   = report.test_marker
         self.append(result)
 
 
@@ -245,4 +226,3 @@ class ExcelReporter(object):
     def pytest_terminal_summary(self, terminalreporter):
         if self.results:
             terminalreporter.write_sep("-", "excel report: %s" % (self.excelpath))
-
