@@ -54,3 +54,7 @@ Release Notes
 **1.5.2 (2023-17-20)**
 
 * Fixes typo error
+
+**1.6.0 (2023-09-14)**
+
+* Replaced openpyexcel with Pandas

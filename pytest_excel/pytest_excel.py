@@ -1,6 +1,5 @@
 import re
 import pandas as pd
-import os
 from datetime import datetime
 from collections import OrderedDict
 import pytest

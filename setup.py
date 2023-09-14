@@ -7,7 +7,7 @@ from setuptools import setup
 
 
 setup(name='pytest-excel',
-      version='1.5.2',
+      version='1.6.0',
       description='pytest plugin for generating excel reports',
       long_description=io.open('README.rst', encoding='utf-8', errors='ignore').read(),
       author='santosh',
@@ -17,7 +17,7 @@ setup(name='pytest-excel',
       license_file = 'LICENSE',
       packages=['pytest_excel'],
       entry_points={'pytest11': ['excel = pytest_excel.pytest_excel']},
-      install_requires=['pytest>=3.6', 'openpyxl'],
+      install_requires=['pytest>3.6', 'pandas'],
       keywords='py.test pytest excel report',
       classifiers=[
           'Development Status :: 5 - Production/Stable',
