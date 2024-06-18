@@ -11,8 +11,8 @@ Requirements
 
 You will need the following prerequisites in order to use pytest-excel:
 
-- Python 3.9, 3.10 and above
-- pytest 3.6.0 or newer
+- Python 3.9, 3.10, 3.11 and 3.12
+- pytest 
 - pandas
 
 
@@ -25,7 +25,7 @@ To install pytest-excel::
 
 Then run your tests with::
 
-    $�py.test --excelreport=report.xls
+    $ py.test --excelreport=report.xls
 
 If you would like more detailed output (one test per line), then you may use the verbose option::
 

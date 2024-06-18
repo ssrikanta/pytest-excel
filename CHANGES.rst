@@ -58,3 +58,7 @@ Release Notes
 **1.6.0 (2023-09-14)**
 
 * Replaced openpyexcel with Pandas
+
+**1.7.0 (2024-06-18)**
+
+* Remove depreciated warnings

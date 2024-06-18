@@ -54,6 +54,7 @@ class ExcelReporter(object):
         self.results = []
         self.excelpath = datetime.now().strftime(excelpath)
 
+
     def append(self, result):
         self.results.append(result)
 
@@ -61,11 +62,14 @@ class ExcelReporter(object):
     def create_sheet(self, column_heading):
         self.wbook = pd.DataFrame(columns = column_heading)
 
+
     def update_worksheet(self):
         self.wbook = pd.concat([self.wbook, pd.DataFrame(self.results)], ignore_index = False)
 
+
     def save_excel(self):
         self.wbook.to_excel(self.excelpath, index = False)
+
 
     def build_result(self, report, status, message):
 
@@ -171,7 +175,8 @@ class ExcelReporter(object):
         self.build_tests(item)
 
 
-    @pytest.hookimpl(trylast=True)
+
+    @pytest.mark.trylast
     def pytest_collection_modifyitems(self, session, config, items):
         """ called after collection has been performed, may filter or re-order
         the items in-place."""
@@ -180,7 +185,8 @@ class ExcelReporter(object):
                 self.append_tests(item)
 
 
-    @pytest.hookimpl(hookwrapper=True)
+
+    @pytest.mark.hookwrapper
     def pytest_runtest_makereport(self, item, call):
 
         outcome = yield
