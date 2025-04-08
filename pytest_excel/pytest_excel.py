@@ -88,6 +88,7 @@ class ExcelReporter(object):
         result['timestamp'] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
         result['message']   = message
         result['file_name'] = report.location[0]
+        result['full_test_name'] = report.nodeid
         result['markers']   = report.test_marker
         self.append(result)
 
