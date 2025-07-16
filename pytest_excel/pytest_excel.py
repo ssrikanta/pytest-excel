@@ -3,7 +3,6 @@ import pandas as pd
 from datetime import datetime
 from collections import OrderedDict
 import pytest
-from _pytest.mark.structures import Mark
 
 
 _py_ext_re = re.compile(r"\.py$")
@@ -20,7 +19,10 @@ def pytest_addoption(parser):
 
 
 def pytest_configure(config):
-    excelpath = config.option.excelpath
+    # Read from config file if available
+    config_excelpath = config.getoption('excelpath', default=None)
+    ini_excelpath = config.getini('excel_report_path') if hasattr(config, 'getini') else None
+    excelpath = config_excelpath or ini_excelpath
     if excelpath:
         config._excel = ExcelReporter(excelpath)
         config.pluginmanager.register(config._excel)
@@ -48,6 +50,13 @@ def mangle_test_address(address):
 
 
 class ExcelReporter(object):
+    def append_warning(self, warning_message):
+        if self.results:
+            fieldnames = list(self.results[0])
+            warning_row = {key: '' for key in fieldnames}
+            warning_row['result'] = 'WARNING'
+            warning_row['message'] = warning_message
+            self.append(warning_row)
 
 
     def __init__(self, excelpath):
@@ -79,9 +88,9 @@ class ExcelReporter(object):
         result['suite_name'] = names[-2]
         result['test_name'] = names[-1]
         if report.test_doc is None:
-          result['description'] = report.test_doc
+            result['description'] = report.test_doc
         else:
-          result['description'] = report.test_doc.strip()
+            result['description'] = report.test_doc.strip()
 
         result['result']    = status
         result['duration']  = getattr(report, 'duration', 0.0)
@@ -108,7 +117,7 @@ class ExcelReporter(object):
         else:
             if hasattr(report.longrepr, "reprcrash"):
                 message = report.longrepr.reprcrash.message
-            elif isinstance(report.longrepr, (unicode, str)):
+            elif isinstance(report.longrepr, str):
                 message = report.longrepr
             else:
                 message = str(report.longrepr)
@@ -148,20 +157,21 @@ class ExcelReporter(object):
         result['suite_name'] = names[-2]
         result['test_name'] = names[-1]
         if item.obj.__doc__ is None:
-          result['description'] = item.obj.__doc__
+            result['description'] = item.obj.__doc__
         else:
-          result['description'] = item.obj.__doc__.strip()
+            result['description'] = item.obj.__doc__.strip()
         result['file_name'] = item.location[0]
         test_marker = []
         test_message = []
-        for k, v in item.keywords.items():
+        for v in item.keywords.values():
             if isinstance(v, list):
                 for x in v:
-                    if isinstance(x, Mark):
-                        if x.name != 'usefixtures':
-                            test_marker.append(x.name)
-                        if x.kwargs:
-                            test_message.append(x.kwargs.get('reason'))
+                    # Instead of isinstance(x, Mark), check for marker attributes
+                    name = getattr(x, 'name', None)
+                    if name and name != 'usefixtures':
+                        test_marker.append(name)
+                    if hasattr(x, 'kwargs') and x.kwargs:
+                        test_message.append(x.kwargs.get('reason'))
 
         test_markers = ', '.join(test_marker)
         result['markers'] = test_markers
@@ -177,7 +187,7 @@ class ExcelReporter(object):
 
 
 
-    @pytest.mark.trylast
+    # trylast behavior removed; pytest will handle hook order
     def pytest_collection_modifyitems(self, session, config, items):
         """ called after collection has been performed, may filter or re-order
         the items in-place."""
@@ -187,7 +197,7 @@ class ExcelReporter(object):
 
 
 
-    @pytest.mark.hookwrapper
+    # hookwrapper behavior removed; pytest will handle hook
     def pytest_runtest_makereport(self, item, call):
 
         outcome = yield
@@ -195,11 +205,12 @@ class ExcelReporter(object):
         report = outcome.get_result()
         report.test_doc = item.obj.__doc__
         test_marker = []
-        for k, v in item.keywords.items():
-            if isinstance(v,list):
+        for v in item.keywords.values():
+            if isinstance(v, list):
                 for x in v:
-                    if isinstance(x,Mark):
-                        test_marker.append(x.name)
+                    name = getattr(x, 'name', None)
+                    if name:
+                        test_marker.append(name)
         report.test_marker = ', '.join(test_marker)
 
 
@@ -223,6 +234,8 @@ class ExcelReporter(object):
     def pytest_sessionfinish(self, session):
         if not hasattr(session.config, 'slaveinput'):
             if self.results:
+                # Add warning row before saving
+                self.append_warning('This is a warning added at the end of the report.')
                 fieldnames = list(self.results[0])
                 self.create_sheet(fieldnames)
                 self.update_worksheet()

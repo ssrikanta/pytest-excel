@@ -59,6 +59,10 @@ Release Notes
 
 * Replaced openpyexcel with Pandas
 
-**1.7.0 (2024-06-18)**
+**1.8.0 (2025-07-16)**
 
-* Remove depreciated warnings
+* Support for Python 3.11 and above only
+* Excel report file name can be set via pytest config or CLI (CLI overrides config)
+* Warning row added to end of Excel report after session
+* Refactored marker handling for compatibility with latest pytest
+* Removed deprecated hook annotations and fixed lint errors
