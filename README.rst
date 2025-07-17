@@ -9,19 +9,22 @@ to create excel report for test results.
 Requirements
 ------------
 
+
 You will need the following prerequisites in order to use pytest-excel:
 
-- Python 3.9, 3.10, 3.11 and 3.12
-- pytest 
+- Python 3.11 and above
+- pytest
 - pandas
+- openpyxl
 
 
 Installation
 ------------
 
-To install pytest-excel::
 
-    $�pip install pytest-excel
+To install pytest-excel and required dependencies::
+
+    $ pip install pytest-excel openpyxl
 
 Then run your tests with::
 

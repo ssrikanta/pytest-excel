@@ -17,7 +17,11 @@ setup(name='pytest-excel',
       license_file = 'LICENSE',
       packages=['pytest_excel'],
       entry_points={'pytest11': ['excel = pytest_excel.pytest_excel']},
-      install_requires=['pytest>3.11', 'pandas',],
+      install_requires=[
+          'pytest>=3.11',
+          'pandas',
+          'openpyxl',
+      ],
       keywords='py.test pytest excel report',
       classifiers=[
           'Development Status :: 5 - Production/Stable',
