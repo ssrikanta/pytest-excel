@@ -54,7 +54,9 @@ features = [
 
 [tool.hatch.version]
 source = "vcs"
-[project.entry-points."pytest.excel"]
+
+[project.entry-points.pytest11]
+excel = "pytest_excel.pytest_excel"
 
 
 [tool.hatch.build.targets.wheel]

@@ -66,3 +66,8 @@ Release Notes
 * Warning row added to end of Excel report after session
 * Refactored marker handling for compatibility with latest pytest
 * Removed deprecated hook annotations and fixed lint errors
+
+
+**1.8.1 (2025-07-22)**
+
+* Fix issue with Excel report file name setting

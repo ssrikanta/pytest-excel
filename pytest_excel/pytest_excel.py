@@ -15,21 +15,15 @@ _pytest_excel_config = None
 
 def pytest_addoption(parser):
     group = parser.getgroup("terminal reporting")
-    group.addoption(
-        '--excelreport',
-        action="store",
-        dest="excelpath",
-        metavar="path",
-        default=None,
-        help="create excel report file at given path.")
-    group.addoption(
-        '--excel-report',
-        action="store",
-        dest="excelpath",
-        metavar="path",
-        default=None,
-        help="create excel report file at given path.")
-    parser.addini('excel_report_path', 'Path to create excel report file', default=None)
+    group.addoption('--excelreport', '--excel-report',
+                    action="store",
+                    dest="excelpath",
+                    metavar="path",
+                    default=None,
+                    help="create excel report file at given path.")
+
+    if hasattr(parser, 'addini'):
+        parser.addini('excel_report_path', 'Path to create excel report file', default=None)
 
 
 
