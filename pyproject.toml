@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pytest-excel"
-version = "1.8.0"
+version = "1.8.1"
 description = "pytest plugin for generating excel reports"
 readme = "README.rst"
 keywords = [
