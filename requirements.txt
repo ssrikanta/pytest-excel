@@ -20,7 +20,7 @@ pandas==2.3.1
     # via pytest-excel (pyproject.toml)
 pluggy==1.6.0
     # via pytest
-pygments==2.19.2
+pygments==2.20.0
     # via pytest
 pytest==8.4.1
     # via pytest-excel (pyproject.toml)
